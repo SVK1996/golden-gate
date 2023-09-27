@@ -1,6 +1,5 @@
 from conf.env_config import *
 from commons.response import *
-from commons.response import *
 
 def create_order(product_ids, quantities):
         cur = db_pg.cursor()

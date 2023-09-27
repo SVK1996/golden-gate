@@ -1,7 +1,5 @@
 from conf.env_config import *
 from commons.response import *
-from commons.response import *
-
 
 def otp_request(mobile, otp, otp_hash):
     try:

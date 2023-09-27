@@ -1,7 +1,6 @@
 from flask import request, jsonify
 from dao.user import *
 from commons.response import *
-from commons.response import *
 from commons.uuid import *
 from commons.str import *
 from commons.nos import *

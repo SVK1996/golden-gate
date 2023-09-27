@@ -1,7 +1,6 @@
 from flask import request, jsonify
 from dao.order import *
 from commons.response import *
-from commons.response import *
 
 def create_order_route():
         data = request.json

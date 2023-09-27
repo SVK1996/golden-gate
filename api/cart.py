@@ -1,7 +1,6 @@
 from flask import request, jsonify
 from dao.cart import *
 from commons.response import *
-from commons.response import *
 
 def add_cart_route():
         data = request.json

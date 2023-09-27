@@ -1,6 +1,5 @@
 from conf.env_config import *
 from commons.response import *
-from commons.response import *
 
 def add_cart(user_id, product_id, quantity):
     try:

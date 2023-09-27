@@ -1,6 +1,5 @@
 from conf.env_config import *
 from commons.response import *
-from commons.response import *
 
 def create_product(name, description, price, inventory):
     try:

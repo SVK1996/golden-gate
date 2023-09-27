@@ -1,7 +1,6 @@
 from flask import request, jsonify
 from dao.products import *
 from commons.response import *
-from commons.response import *
 import redis
 
 def create_product_route():
