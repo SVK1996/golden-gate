@@ -73,8 +73,6 @@ To set up and run the application, follow these steps:
 
 3. **Logging and Monitoring:** Implement a comprehensive logging and monitoring system to track application performance and errors with use of opensource tools such as prometheus and grafana.
 
-4. **Database Utilities:** use of schema migration Libraries for executing DDL , ORM for dynamicity.
-
-
+4. **Database Manageement and Optimization:** Employ schema migration libraries for executing Data Definition Language (DDL) operations and utilize Object-Relational Mapping (ORM) for enhanced flexibility and dynamism in database interactions.
 
 Feel free to explore and implement these enhancements to improve the functionality and performance of the E-commerce Backend Application.
