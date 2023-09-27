@@ -71,7 +71,7 @@ To set up and run the application, follow these steps:
 
 2. **Scalability:** Optimize database queries by using indexing as well as use of open source tools such as elastic search , read replication strategies, load balancing techniques to handle increased traffic interms of scalability.
 
-3. **Logging and Monitoring:** Implement a comprehensive logging and monitoring system to track application performance and errors with use of opensource tools suhc as prometheus and grafana.
+3. **Logging and Monitoring:** Implement a comprehensive logging and monitoring system to track application performance and errors with use of opensource tools such as prometheus and grafana.
 
 4. **Database Utilities:** use of schema migration Libraries for executing DDL , ORM for dynamicity.
 
