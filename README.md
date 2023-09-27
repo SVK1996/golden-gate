@@ -69,7 +69,11 @@ To set up and run the application, follow these steps:
 
 1. **Security:** Enhance security by implementing role-based access control (RBAC) for users and revoking of token during logout.
 
-2. **Scalability:** Optimize database queries by using indexing as well as use of open source tools such as elastic search , read replication strategies, load balancing techniques to handle increased traffic interms of scalability.
+2. **Scalability:** 
+Implementation of efficient indexing techniques to optimize database queries,
+Integration of open-source tools like Elasticsearch to enhance search capabilities,
+Implementation of read replication strategies to distribute read traffic efficiently,
+Adoption of load balancing techniques to handle increased user traffic for improved scalability and performance.
 
 3. **Logging and Monitoring:** Implement a comprehensive logging and monitoring system to track application performance and errors with use of opensource tools such as prometheus and grafana.
 
