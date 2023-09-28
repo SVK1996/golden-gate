@@ -8,11 +8,17 @@ from blueprints.user_bp import user_bp
 from blueprints.auth_bp import auth_bp
 from flask_jwt_extended import JWTManager
 from conf.env_config import *
+from flask_jwt_extended.exceptions import InvalidHeaderError
+from commons.response import *
 
 
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = SECRET_KEY
 jwt = JWTManager(app)
+
+@app.errorhandler(InvalidHeaderError)
+def handle_invalid_header_error(e):
+    return unauthorized(e)
 
 app.register_blueprint(product_bp, url_prefix='/gateway/v1')
 app.register_blueprint(order_bp, url_prefix='/gateway/v1')

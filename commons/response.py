@@ -37,3 +37,6 @@ def internal_server_error(error):
 
 def unprocessable_entry(error):
     return handle_error(error, HTTPStatus.UNPROCESSABLE_ENTITY)
+
+def unauthorized(error):
+    return handle_error(error, HTTPStatus.UNAUTHORIZED)
