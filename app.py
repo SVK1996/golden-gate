@@ -11,7 +11,7 @@ from conf.env_config import *
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = SECRET_KEY
+app.config['JWT_SECRET_KEY'] = SECRET_KEY
 jwt = JWTManager(app)
 
 app.register_blueprint(product_bp, url_prefix='/gateway/v1')
