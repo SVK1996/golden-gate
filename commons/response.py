@@ -10,7 +10,7 @@ def response(data):
     response.status_code = 200
     return response
 
-def response_list(total, data, status_code):
+def response_list(total, data):
     response = jsonify({'data':data, 'total': int(total)})
     response.status_code = 200
     return response

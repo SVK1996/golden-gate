@@ -55,25 +55,13 @@ def otp_auth_route():
             data = {"acess_token" : access_token, "token_type":"Bearer"}
             return response(data)
         else:
-            return bad_request('user-not-registered')
+            return not_found('user-not-registered')
     else:
         return bad_request('otp-invalid')
 
 def logout_route(current_user):
    
     if invalidate_session(current_user):
-
-        # Generate a new token with a short expiration time
-        short_expiration_time = timedelta(minutes=1)
-        new_access_token = create_access_token(identity=current_user, expires_delta=short_expiration_time)
-        
-        data = {"token": new_access_token}
-
-        # Get the client's IP address from the request object
-        client_ip = request.remote_addr
-                
-        create_session(current_user, new_access_token, client_ip)
-
         return handle_response('logout-succesful')
     else:
         return bad_request('logout-failed')

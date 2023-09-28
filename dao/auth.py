@@ -18,7 +18,7 @@ def otp_request(mobile, otp, otp_hash):
     except Exception as e:
         db_pg.rollback()
         logging.critical(e)
-        return bad_request('otp-capture-failed')
+        return bad_request('otp-request-failed')
 
 def otp_valid(mdigest):
     try:

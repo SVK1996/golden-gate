@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask_restful import Api, Resource, reqparse
 from api.order import *
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 order_bp = Blueprint('order', __name__)
 api = Api(order_bp)
@@ -16,19 +16,18 @@ class OrderResource(Resource):
     @jwt_required()
     def post(self):
         # Create a new order for the user
-        parser = reqparse.RequestParser()
-        parser.add_argument('product_ids', type=list, required=True, help='List of product IDs in the order')
+        user_id = get_jwt_identity()
 
-        args = parser.parse_args()
-
-        return create_order_route()
+        return create_order_route(user_id)
 
     @jwt_required()
-    def get(self, user_id=None):
+    def get(self):
         # Fetch order history for the user
+        user_id = get_jwt_identity()
+
         if user_id is None:
             return bad_request('user-id-required')
         else:
             return fetch_order_history_route(user_id)
 
-api.add_resource(OrderResource, '/orders', '/orders/<int:user_id>')
+api.add_resource(OrderResource, '/orders')

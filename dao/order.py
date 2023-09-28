@@ -1,74 +1,71 @@
 from conf.env_config import *
 from commons.response import *
+from datetime import datetime
+from dao.products import *
+import traceback
+from conf.env_config import *
 
-def create_order(product_ids, quantities):
-        cur = db_pg.cursor()
-        cur.execute("set search_path to " + db_schema)
+def create_order(order_data, user):
         try:
-            # Start a transaction
-            db_pg.autocommit = False
-            
-            order_pg_record_values = [user]
-            # Insert the order into the 'orders' table and retrieve the inserted order_id
-            cur.execute("""INSERT INTO orders (user_id) VALUES (%s) RETURNING id;""", order_pg_record_values)
-            order_id = cur.fetchone()[0]
+            cur = db_pg.cursor()
+            cur.execute("set search_path to " + db_schema)
 
-            # Calculate the total order amount
+            now = datetime.now()
+
+            order_items = order_data.get('order_items')
+            if not order_items or not isinstance(order_items, list) or len(order_items) == 0:
+                return bad_request("Invalid or empty order_items")
+                        
             total_amount = 0
-
-            # Insert the order items into the 'order_items' table and update product inventory
-            for product_id, quantity in zip(product_ids, quantities):
-                # Fetch product details and price
-                cur.execute("SELECT name, price, inventory FROM products WHERE id = %s", (product_id,))
-                product_data = cursor.fetchone()
-
-                if not product_data:
-                    return not_found(f"Product with ID # {product_id} not found")
-
-                product_name, product_price, product_inventory = product_data
-
-                # Calculate the line item subtotal
-                line_item_total = product_price * quantity
-
-                # Update the product inventory
-                if product_inventory < quantity:
-                    return unprocessable_entry(f"Product {product_name} is out of stock")
+            for item in order_items:
+                product_id = item.get('product_id')
+                quantity = item.get('quantity')
+                price = item.get('price')
                 
-                now = datetime.now()
+                # # Check if product_id exists
+                if len(fetch_product(product_id)) == 0:
+                     return bad_request(f"Product with ID {product_id} does not exist")
+                
+                # Check if quantity is a positive integer
+                if not isinstance(quantity, int) or quantity <= 0:
+                    return bad_request("Invalid quantity for one or more order items")
 
-                cur.execute("UPDATE products SET inventory = inventory - %s, updated_at = %s WHERE id = %s", (quantity, now, product_id))
 
-                # Update the total order amount
-                total_amount += line_item_total
+                total_amount += price * quantity
+            # Insert order into the database
+            cur.execute("INSERT INTO orders (usr_id, total_amount) VALUES (%s, %s) RETURNING id",(user, total_amount))
+            order_id = cur.fetchone()[0]
+            
+            # Update the inventory
+            update_inventory(order_items)
 
-                items_pg_record_values = [order_id, product_id, product_name, quantity, line_item_total]
+            # Insert order items into the database
+            for item in order_items:
+                product_id = item.get('product_id')
+                quantity = item.get('quantity')
+                price = item.get('price')
 
-                # Insert the order item
-                cur.execute("""INSERT INTO order_items (order_id, product_id, product_name, quantity, line_item_total) "VALUES (%s, %s, %s, %s, %s)""", items_pg_record_values)
-
-            # Update the order with the total amount
-            cur.execute("UPDATE orders SET total_amount = %s,updated_at = %s WHERE id = %s", (total_amount, now, order_id))
+                # Insert order items into the database
+                cur.execute("INSERT INTO order_items (order_id, product_id, quantity, line_item_total) VALUES (%s, %s, %s, %s)",(order_id, product_id, quantity, price))
 
             # Commit the transaction
             db_pg.commit()
 
+            cur.close()
+            
             data = {"order_id" : order_id}
             return response(data)
         except Exception as e:
-            # Rollback the transaction on error
+            traceback.print_exc()
             db_pg.rollback()
             logging.error(e)
             return bad_request(str(e))
-        finally:
-            # Restore autocommit mode and close the connection
-            db_pg.autocommit = True
-            db_pg.close()
 
-def fetch_order_history(user_id):
+def fetch_order_history(limit, offset, user_id):
     try:
         cur = db_pg.cursor()
         cur.execute("set search_path to " + db_schema)
-        cur.execute("""SELECT id, total_amount, created_at FROM orders WHERE user_id = %s ORDER BY created_at DESC;""", (user_id,))
+        cur.execute("""SELECT id, total_amount, created_at FROM orders WHERE usr_id = %s LIMIT %s OFFSET %s;""", (user_id, limit, offset))            
         records = cur.fetchall()
         if records is None:
             return not_found('orders-not-found')
@@ -82,4 +79,3 @@ def fetch_order_history(user_id):
         db_pg.rollback()
         logging.critical(e)
         return bad_request('orders-fetch-failed')
-        

@@ -1,5 +1,6 @@
 from conf.env_config import *
 from commons.response import *
+from datetime import datetime
 
 def create_product(name, description, price, inventory):
     try:
@@ -33,7 +34,8 @@ def fetch_product(product_id):
     except Exception as e:
         db_pg.rollback()
         logging.critical(e)
-        return []
+        data = []
+        return data
 
 def fetch_product_list(limit,offset):
     try:
@@ -110,4 +112,23 @@ def delete_product(product_id):
     except Exception as e:
         db_pg.rollback()
         logging.critical(e)
-        return bad_request('product-deletion-failed')
+        return bad_request('product-removal-failed')
+
+def update_inventory(order_items):
+    try:
+        cur = db_pg.cursor()
+        cur.execute("set search_path to " + db_schema)
+
+        now = datetime.now()
+
+        for item in order_items:
+           quantity = item.get('quantity', 1)
+
+           pg_record_values = [quantity, now, int(item['product_id'])]
+
+           cur.execute("""UPDATE products SET inventory = inventory - %s, updated_at = %s WHERE id = %s""", pg_record_values)
+        cur.execute("commit")
+        cur.close()
+    except Exception as e:
+        db_pg.rollback()
+        logging.critical(e)

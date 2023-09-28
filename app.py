@@ -14,11 +14,11 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
 jwt = JWTManager(app)
 
-app.register_blueprint(product_bp, url_prefix='/gateway/api/v1')
-app.register_blueprint(order_bp, url_prefix='/gateway/api/v1')
-app.register_blueprint(cart_bp, url_prefix='/gateway/api/v1')
-app.register_blueprint(user_bp, url_prefix='/gateway/api/v1')
-app.register_blueprint(auth_bp, url_prefix='/gateway/api/v1')
+app.register_blueprint(product_bp, url_prefix='/gateway/v1')
+app.register_blueprint(order_bp, url_prefix='/gateway/v1')
+app.register_blueprint(cart_bp, url_prefix='/gateway/v1')
+app.register_blueprint(user_bp, url_prefix='/gateway/v1')
+app.register_blueprint(auth_bp, url_prefix='/gateway/v1')
 
 if __name__ == '__main__':
     app.run(debug=True)

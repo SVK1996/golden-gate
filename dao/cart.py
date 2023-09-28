@@ -1,5 +1,6 @@
 from conf.env_config import *
 from commons.response import *
+from datetime import datetime
 
 def add_cart(user_id, product_id, quantity):
     try:
@@ -7,7 +8,7 @@ def add_cart(user_id, product_id, quantity):
         cur.execute("set search_path to " + db_schema)
         pg_record_values = [user_id, product_id, quantity]
         # Add item into the cart
-        cur.execute("""INSERT INTO cart (user_id, product_id, quantity) VALUES (%s, %s, %s)""",pg_record_values)
+        cur.execute("""INSERT INTO cart (usr_id, product_id, quantity) VALUES (%s, %s, %s)""",pg_record_values)
         cur.execute("commit")
         return handle_response('cart-addition-successful')
     except Exception as e:
@@ -24,7 +25,7 @@ def update_cart(user_id,product_id,quantity):
 
         pg_record_values = [quantity, now, user_id, product_id]
         # Update the quantity of the item in the cart
-        cur.execute("""UPDATE cart SET quantity = %s,updated_at = %s WHERE user_id = %s AND product_id = %s""",pg_record_values)
+        cur.execute("""UPDATE cart SET quantity = %s,updated_at = %s WHERE usr_id = %s AND product_id = %s""",pg_record_values)
         cur.execute("commit")
         return handle_response('cart-update-successful')
     except Exception as e:
@@ -38,7 +39,7 @@ def remove_from_cart(user_id, product_id):
         cur.execute("set search_path to " + db_schema)
         pg_record_values = [user_id, product_id]
         # Remove the item from the cart
-        cur.execute("""DELETE FROM cart WHERE user_id = %s AND product_id = %s""",pg_record_values)
+        cur.execute("""DELETE FROM cart WHERE usr_id = %s AND product_id = %s""",pg_record_values)
         cur.execute("commit")
         return handle_response('cart-removal-successful')
     except Exception as e:
@@ -50,7 +51,7 @@ def fetch_cart(user_id):
     try:
         cur = db_pg.cursor()
         cur.execute("set search_path to " + db_schema)
-        cur.execute("""SELECT product_id, quantity FROM cart WHERE user_id = %s""", (user_id,))
+        cur.execute("""SELECT product_id, quantity FROM cart WHERE usr_id = %s""", (user_id,))
         records = cur.fetchall()
         if records is None:
             return handle_response('cart-empty')
