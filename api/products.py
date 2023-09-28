@@ -52,6 +52,10 @@ def fetch_product_list_route():
 
 def update_product_route(product_id):
         data = request.json
+
+        if not data:
+                return bad_request('At least one field is required for updating')
+
         return update_product(data, product_id)
 
 def delete_product_route(product_id):

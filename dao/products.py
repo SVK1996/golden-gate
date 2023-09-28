@@ -1,6 +1,7 @@
 from conf.env_config import *
 from commons.response import *
 from datetime import datetime
+import traceback
 
 def create_product(name, description, price, inventory):
     try:
@@ -75,7 +76,7 @@ def update_product(data, product_id):
 
         if name is not None:
             update_query += "name = %s, "
-            update_values.append()
+            update_values.append(name)
         if description is not None:
             update_query += "description = %s, "
             update_values.append(description)
@@ -90,7 +91,7 @@ def update_product(data, product_id):
 
         # Remove the trailing comma and add the WHERE clause
         update_query = update_query.rstrip(', ') + ",updated_at = %s WHERE id = %s"
-        update_values.append(now, product_id)
+        update_values.extend((now, product_id))
 
         cur.execute(update_query, tuple(update_values))
         cur.execute("commit")
@@ -98,6 +99,7 @@ def update_product(data, product_id):
         resp = {'product_id': product_id}
         return response(resp)
     except Exception as e:
+        traceback.print_exc()
         db_pg.rollback()
         logging.critical(e)
         return bad_request('product-update-failed')

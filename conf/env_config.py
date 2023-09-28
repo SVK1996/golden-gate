@@ -3,7 +3,7 @@ import redis
 import psycopg2
 
 
-db_pg = psycopg2.connect("host=localhost port=5432 dbname=ecom_store user=postgres password=password")
+db_pg = psycopg2.connect("host=localhost port=5432 dbname=britannica user=postgres password=password")
 db_schema = 'public'
 
 logging.basicConfig(format='%(asctime)s,%(msecs)03d %(levelname)s %(message)s', level=logging.INFO, datefmt='%Y-%m-%dT%H:%M:%S')

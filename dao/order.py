@@ -5,6 +5,7 @@ from dao.products import *
 import traceback
 from conf.env_config import *
 
+
 def create_order(order_data, user):
         try:
             cur = db_pg.cursor()
@@ -72,7 +73,7 @@ def fetch_order_history(limit, offset, user_id):
         else:
             orders = []
             for record in records:
-                order = {'id': record[0],'total_amount': record[1], 'created_at': record[2]}
+                order = {'id': record[0],'total_amount': record[1], 'created_at': record[2].strftime("%Y-%m-%d %H:%M:%S")}
                 orders.append(order)
             return response_list(len(orders), orders)
     except Exception as e:
